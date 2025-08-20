@@ -1,0 +1,46 @@
+{
+  "expo": {
+    "name": "FIFA Mundial 2026",
+    "slug": "fifa-mundial-2026",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/final_quest_240x240.png",
+    "userInterfaceStyle": "dark",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/images/final_quest_240x240.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#007748"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.fifamundial.2026",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": false
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/final_quest_240x240.png",
+        "backgroundColor": "#007748"
+      },
+      "edgeToEdgeEnabled": true,
+      "package": "com.fifamundial.2026"
+    },
+    "web": {
+      "favicon": "./assets/images/final_quest_240x240.png",
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-font",
+      "expo-router"
+    ],
+    "scheme": "fifa-mundial-2026",
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "router": {}
+    }
+  }
+}

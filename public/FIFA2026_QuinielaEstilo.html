@@ -1,0 +1,2520 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FIFA World Cup 2026 - Quiniela Champions</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;500;700;900&family=Audiowide&display=swap');
+        
+        :root {
+            /* FIFA 2026 Official Colors */
+            --fifa-primary: #007748;
+            --fifa-secondary: #FFD700;
+            --fifa-accent: #FF6B00;
+            --fifa-blue: #003DA5;
+            --fifa-red: #D50000;
+            --fifa-dark: #1a1a1a;
+            --fifa-light: #f8f9fa;
+            
+            /* Gradients */
+            --gradient-field: linear-gradient(135deg, #228B22 0%, #32CD32 100%);
+            --gradient-stadium: linear-gradient(180deg, #2C3E50 0%, #34495E 50%, #2C3E50 100%);
+            --gradient-gold: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+            
+            /* Shadows & Glows */
+            --shadow-card: 0 8px 32px rgba(0,0,0,0.3);
+            --shadow-hover: 0 12px 40px rgba(0,119,72,0.4);
+            --glow-fifa: 0 0 20px rgba(0,119,72,0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(0,119,72,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255,215,0,0.1) 0%, transparent 50%),
+                var(--gradient-stadium);
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        .orbitron { font-family: 'Orbitron', monospace; }
+        .audiowide { font-family: 'Audiowide', cursive; }
+        .exo2 { font-family: 'Exo 2', sans-serif; }
+
+        /* ANIMATIONS */
+        @keyframes neonPulse {
+            0%, 100% { text-shadow: 0 0 10px currentColor; }
+            50% { text-shadow: 0 0 20px currentColor; }
+        }
+
+        @keyframes slideInFromLeft {
+            0% { transform: translateX(-100px); opacity: 0; }
+            100% { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes goalCelebration {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            25% { transform: scale(1.1) rotate(-2deg); }
+            75% { transform: scale(1.1) rotate(2deg); }
+        }
+
+        @keyframes matchPulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 119, 72, 0.7); }
+            50% { box-shadow: 0 0 0 10px rgba(0, 119, 72, 0); }
+        }
+
+        /* HEADER STYLES */
+        .fifa-header {
+            background: linear-gradient(135deg, rgba(0,0,0,0.9) 0%, rgba(26,26,46,0.9) 100%);
+            border-bottom: 3px solid var(--fifa-secondary);
+            box-shadow: 0 5px 30px rgba(0,255,136,0.3);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+
+        .fifa-title {
+            background: linear-gradient(135deg, var(--fifa-secondary) 0%, #FFA500 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: none;
+            animation: neonPulse 3s ease-in-out infinite;
+        }
+
+        .fifa-subtitle {
+            color: var(--fifa-primary);
+            text-shadow: 0 0 10px rgba(0,255,136,0.5);
+        }
+
+        .fifa-stat-card {
+            background: linear-gradient(135deg, rgba(0,119,72,0.2) 0%, rgba(255,215,0,0.1) 100%);
+            border: 2px solid var(--fifa-secondary);
+            border-radius: 12px;
+            padding: 1rem;
+            backdrop-filter: blur(10px);
+            box-shadow: var(--shadow-card);
+        }
+
+        .fifa-stat-number {
+            color: var(--fifa-secondary);
+            text-shadow: 0 0 10px rgba(255,215,0,0.5);
+        }
+
+        .fifa-stat-label {
+            color: var(--fifa-light);
+            font-weight: 700;
+        }
+
+        /* MATCH CARD STYLES */
+        .match-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.9) 100%);
+            border-radius: 20px;
+            box-shadow: var(--shadow-card);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(0,119,72,0.2);
+            transition: all 0.3s ease;
+            animation: slideInFromLeft 0.8s ease-out;
+        }
+
+        .match-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--fifa-secondary);
+        }
+
+        .match-card.active {
+            border: 3px solid var(--fifa-secondary);
+            box-shadow: var(--glow-fifa);
+            animation: matchPulse 2s infinite;
+        }
+
+        .team-logo {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid var(--fifa-secondary);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+
+        .team-logo:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0,119,72,0.3);
+        }
+
+        .vs-divider {
+            background: var(--gradient-gold);
+            color: var(--fifa-dark);
+            border-radius: 50px;
+            padding: 1rem;
+            box-shadow: var(--shadow-card);
+            text-shadow: none;
+        }
+
+        /* PREDICTION BUTTONS */
+        .prediction-btn {
+            background: linear-gradient(135deg, var(--fifa-primary) 0%, #005a3a 100%);
+            border: 2px solid var(--fifa-secondary);
+            border-radius: 15px;
+            color: white;
+            font-weight: 700;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            transform-origin: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .prediction-btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .prediction-btn:hover:before {
+            left: 100%;
+        }
+
+        .prediction-btn:hover {
+            transform: scale(1.05);
+            box-shadow: var(--glow-fifa);
+            background: linear-gradient(135deg, #00a055 0%, var(--fifa-primary) 100%);
+        }
+
+        .prediction-btn.home {
+            background: linear-gradient(135deg, var(--fifa-blue) 0%, #0056a3 100%);
+        }
+
+        .prediction-btn.draw {
+            background: linear-gradient(135deg, var(--fifa-accent) 0%, #cc5500 100%);
+        }
+
+        .prediction-btn.away {
+            background: linear-gradient(135deg, var(--fifa-red) 0%, #aa0000 100%);
+        }
+
+        /* RESULT DISPLAY */
+        .result-display {
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem 0;
+            animation: goalCelebration 0.8s ease-in-out;
+        }
+
+        .result-display.correct {
+            background: linear-gradient(135deg, rgba(34,197,94,0.2) 0%, rgba(16,185,129,0.1) 100%);
+            border: 3px solid #10b981;
+            box-shadow: 0 0 30px rgba(16,185,129,0.3);
+        }
+
+        .result-display.incorrect {
+            background: linear-gradient(135deg, rgba(239,68,68,0.2) 0%, rgba(220,38,38,0.1) 100%);
+            border: 3px solid #dc2626;
+            box-shadow: 0 0 30px rgba(220,38,38,0.3);
+        }
+
+        /* MODAL STYLES */
+        .fifa-modal {
+            background: linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(248,249,250,0.9) 100%);
+            border-radius: 25px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            border: 3px solid var(--fifa-secondary);
+            backdrop-filter: blur(20px);
+            max-width: 500px;
+            width: 90%;
+            animation: slideInFromLeft 0.5s ease-out;
+        }
+
+        /* LEADERBOARD */
+        .leaderboard-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(248,249,250,0.8) 100%);
+            border-radius: 15px;
+            border: 2px solid var(--fifa-secondary);
+            box-shadow: var(--shadow-card);
+            transition: all 0.3s ease;
+        }
+
+        .leaderboard-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .rank-badge {
+            background: var(--gradient-gold);
+            color: var(--fifa-dark);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .rank-badge.gold {
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+        }
+
+        .rank-badge.silver {
+            background: linear-gradient(135deg, #C0C0C0 0%, #A0A0A0 100%);
+        }
+
+        .rank-badge.bronze {
+            background: linear-gradient(135deg, #CD7F32 0%, #B87333 100%);
+        }
+
+        /* STATISTICS */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(0,119,72,0.1) 0%, rgba(255,215,0,0.05) 100%);
+            border: 2px solid var(--fifa-secondary);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--fifa-secondary);
+            text-shadow: 0 0 10px rgba(255,215,0,0.5);
+        }
+
+        .stat-label {
+            color: var(--fifa-light);
+            font-weight: 700;
+            margin-top: 0.5rem;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .fifa-stat-card {
+                padding: 0.75rem;
+            }
+            
+            .fifa-stat-number {
+                font-size: 1.5rem;
+            }
+            
+            .match-card {
+                margin: 1rem 0;
+            }
+            
+            .prediction-btn {
+                padding: 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* LIVE MATCH INDICATOR */
+        .live-indicator {
+            background: #ff0000;
+            color: white;
+            border-radius: 20px;
+            padding: 0.25rem 0.75rem;
+            font-size: 0.8rem;
+            font-weight: 700;
+            animation: neonPulse 1s infinite;
+        }
+
+        /* Score prediction display styles */
+        .score-prediction-display,
+        .result-prediction-display {
+            background: linear-gradient(135deg, var(--fifa-primary), #005a3a);
+            padding: 10px 15px;
+            border-radius: 12px;
+            margin-top: 15px;
+            border: 2px solid var(--fifa-secondary);
+            text-align: center;
+            animation: predictionGlow 2s ease-in-out infinite alternate;
+        }
+
+        .prediction-label {
+            display: block;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 5px;
+        }
+
+        .prediction-score,
+        .prediction-result {
+            display: block;
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: var(--fifa-secondary);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .potential-points {
+            display: block;
+            font-size: 0.8rem;
+            color: #90EE90;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        @keyframes predictionGlow {
+            0% { box-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+            100% { box-shadow: 0 0 20px rgba(255, 215, 0, 0.6); }
+        }
+
+        /* API Status indicator */
+        .api-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .api-status.online {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            box-shadow: 0 0 15px rgba(40, 167, 69, 0.4);
+        }
+
+        .api-status.offline {
+            background: linear-gradient(135deg, #dc3545, #fd7e14);
+            color: white;
+            box-shadow: 0 0 15px rgba(220, 53, 69, 0.4);
+        }
+
+        /* Enhanced prediction type selector */
+        .prediction-type-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            padding: 5px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .type-btn {
+            flex: 1;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 20px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: transparent;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .type-btn.active {
+            background: linear-gradient(135deg, var(--fifa-primary), #005a3a);
+            color: var(--fifa-secondary);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+            transform: scale(1.05);
+        }
+
+        .type-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        /* Score input enhancement */
+        .score-inputs {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            justify-content: center;
+            margin: 15px 0;
+        }
+
+        .score-input {
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--fifa-secondary);
+            border-radius: 12px;
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .score-input:focus {
+            outline: none;
+            border-color: var(--fifa-secondary);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+            transform: scale(1.1);
+        }
+
+        .vs-separator {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--fifa-secondary);
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        /* Enhanced modal styles */
+        .result-modal {
+            animation: modalSlideIn 0.5s ease-out;
+        }
+
+        @keyframes modalSlideIn {
+            0% {
+                opacity: 0;
+                transform: translateY(-50px) scale(0.9);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Mobile responsive enhancements */
+        @media (max-width: 768px) {
+            .prediction-type-container {
+                flex-direction: column;
+                gap: 8px;
+            }
+            
+            .score-inputs {
+                gap: 10px;
+            }
+            
+            .score-input {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .api-status {
+                top: 10px;
+                right: 10px;
+                font-size: 0.7rem;
+                padding: 6px 10px;
+            }
+            
+            .container {
+                padding: 0.5rem;
+            }
+            
+            .match-card {
+                margin: 0.5rem 0;
+            }
+            
+            .prediction-btn {
+                padding: 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+            }
+            
+            .fifa-stat-card {
+                padding: 0.75rem;
+            }
+            
+            .fifa-stat-number {
+                font-size: 1.5rem;
+            }
+            
+            .team-logo {
+                width: 60px !important;
+                height: 60px !important;
+            }
+            
+            .vs-divider {
+                margin: 0 1rem;
+            }
+            
+            .score-select {
+                width: 60px !important;
+                height: 60px !important;
+                font-size: 1.5rem !important;
+            }
+            
+            .prediction-type-btn {
+                padding: 0.75rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .stage-nav {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            .stage-nav .flex {
+                flex-wrap: nowrap;
+                min-width: max-content;
+            }
+            
+            .stage-btn {
+                flex-shrink: 0;
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 480px) {
+            .fifa-stat-number {
+                font-size: 1.25rem;
+            }
+            
+            .prediction-btn {
+                padding: 0.75rem;
+                font-size: 0.85rem;
+            }
+            
+            .team-logo {
+                width: 50px !important;
+                height: 50px !important;
+            }
+            
+            .team-logo img {
+                width: 40px !important;
+                height: 40px !important;
+            }
+            
+            .score-select {
+                width: 50px !important;
+                height: 50px !important;
+                font-size: 1.25rem !important;
+            }
+            
+            .vs-divider .orbitron {
+                font-size: 1.5rem !important;
+            }
+            
+            .match-card {
+                padding: 1rem !important;
+            }
+        }
+
+        /* Dark mode support for better contrast */
+        @media (prefers-color-scheme: dark) {
+            .api-status.offline {
+                background: linear-gradient(135deg, #dc2626, #ef4444);
+            }
+            
+            .api-status.online {
+                background: linear-gradient(135deg, #059669, #10b981);
+            }
+        }
+
+        /* High contrast mode */
+        @media (prefers-contrast: high) {
+            .prediction-btn {
+                border: 2px solid currentColor;
+            }
+            
+            .team-logo {
+                border: 2px solid var(--fifa-secondary);
+            }
+        }
+
+        /* Landscape mobile optimization */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .match-card {
+                padding: 1rem 0.5rem;
+            }
+            
+            .vs-divider {
+                margin: 0 0.5rem;
+            }
+            
+            .team-logo {
+                width: 50px !important;
+                height: 50px !important;
+                margin-bottom: 0.5rem !important;
+            }
+        }
+
+        /* FLOATING PARTICLES */
+        .floating-particle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: var(--fifa-secondary);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.6;
+        }
+
+        /* PREDICTION TYPE SELECTOR */
+        .prediction-type-btn {
+            background: linear-gradient(135deg, rgba(0,119,72,0.1) 0%, rgba(255,215,0,0.05) 100%);
+            border: 2px solid var(--fifa-secondary);
+            border-radius: 12px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            color: var(--fifa-primary);
+        }
+
+        .prediction-type-btn.active {
+            background: var(--gradient-gold);
+            color: var(--fifa-dark);
+            box-shadow: var(--glow-fifa);
+        }
+
+        .prediction-type-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* SCORE PREDICTION */
+        .score-select {
+            width: 60px;
+            height: 60px;
+            border: 3px solid var(--fifa-secondary);
+            border-radius: 50%;
+            font-size: 1.5rem;
+            font-weight: 900;
+            text-align: center;
+            background: white;
+            color: var(--fifa-primary);
+            transition: all 0.3s ease;
+        }
+
+        .score-select:focus {
+            outline: none;
+            box-shadow: var(--glow-fifa);
+            transform: scale(1.1);
+        }
+
+        .prediction-section {
+            transition: all 0.3s ease;
+        }
+
+        .prediction-section.hidden {
+            display: none;
+        }
+
+        /* MATCH STATUS INDICATORS */
+        .match-status {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .match-status.upcoming {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .match-status.live {
+            background: #ef4444;
+            color: white;
+            animation: neonPulse 1s infinite;
+        }
+
+        .match-status.finished {
+            background: #10b981;
+            color: white;
+        }
+
+        /* LIVE SCORE DISPLAY */
+        .live-score {
+            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(26,26,46,0.8) 100%);
+            border-radius: 15px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: white;
+            text-align: center;
+        }
+
+        .score-display {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--fifa-secondary);
+            text-shadow: 0 0 10px rgba(255,215,0,0.5);
+        }
+
+        /* API CONNECTION STATUS */
+        .api-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            z-index: 1000;
+        }
+
+        .api-status.connected {
+            background: #10b981;
+            color: white;
+        }
+
+        .api-status.disconnected {
+            background: #ef4444;
+            color: white;
+        }
+
+        .api-status.loading {
+            background: #f59e0b;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- API Status Indicator -->
+    <div id="apiStatus" class="api-status disconnected">
+        <i class="fas fa-wifi mr-2"></i>Modo Offline
+    </div>
+
+    <!-- Floating Particles Background -->
+    <div class="floating-particles"></div>
+
+    <!-- Header -->
+    <header class="fifa-header">
+        <div class="max-w-7xl mx-auto px-4 py-6">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="flex items-center space-x-4 mb-4 md:mb-0">
+                    <div class="w-16 h-16 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-trophy text-2xl text-yellow-300"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-4xl font-black orbitron fifa-title">
+                            FIFA WORLD CUP 2026
+                        </h1>
+                        <p class="text-xl font-bold fifa-subtitle">QUINIELA CHAMPIONS</p>
+                    </div>
+                </div>
+
+                <div class="hidden md:flex items-center space-x-6">
+                    <div class="fifa-stat-card">
+                        <div class="text-4xl font-bold fifa-stat-number orbitron" id="totalPoints">0</div>
+                        <div class="text-sm fifa-stat-label font-medium">PUNTOS</div>
+                    </div>
+                    <div class="fifa-stat-card">
+                        <div class="text-4xl font-bold fifa-stat-number orbitron" id="correctPredictions">0</div>
+                        <div class="text-sm fifa-stat-label font-medium">ACIERTOS</div>
+                    </div>
+                    <div class="fifa-stat-card">
+                        <div class="text-4xl font-bold fifa-stat-number orbitron" id="currentStreak">0</div>
+                        <div class="text-sm fifa-stat-label font-medium">RACHA</div>
+                    </div>
+                    <div class="fifa-stat-card">
+                        <div class="text-4xl font-bold fifa-stat-number orbitron" id="accuracy">0%</div>
+                        <div class="text-sm fifa-stat-label font-medium">PRECISIÓN</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Stats -->
+            <div class="md:hidden mt-4 grid grid-cols-4 gap-2">
+                <div class="fifa-stat-card">
+                    <div class="text-xl font-bold fifa-stat-number orbitron" id="totalPointsMobile">0</div>
+                    <div class="text-xs fifa-stat-label">PUNTOS</div>
+                </div>
+                <div class="fifa-stat-card">
+                    <div class="text-xl font-bold fifa-stat-number orbitron" id="correctPredictionsMobile">0</div>
+                    <div class="text-xs fifa-stat-label">ACIERTOS</div>
+                </div>
+                <div class="fifa-stat-card">
+                    <div class="text-xl font-bold fifa-stat-number orbitron" id="currentStreakMobile">0</div>
+                    <div class="text-xs fifa-stat-label">RACHA</div>
+                </div>
+                <div class="fifa-stat-card">
+                    <div class="text-xl font-bold fifa-stat-number orbitron" id="accuracyMobile">0%</div>
+                    <div class="text-xs fifa-stat-label">PRECISIÓN</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="relative z-10 max-w-7xl mx-auto px-4 py-8">
+        
+        <!-- Tournament Navigation -->
+        <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-6 mb-8 border border-white border-opacity-20">
+            <h2 class="text-2xl font-bold text-white mb-4 orbitron">
+                <i class="fas fa-calendar-alt mr-3 text-yellow-400"></i>
+                Calendario de Partidos
+            </h2>
+            <div class="flex flex-wrap gap-4 justify-center">
+                <button onclick="loadStage('round16')" class="prediction-btn" id="btnRound16">
+                    <i class="fas fa-play mr-2"></i>Octavos
+                </button>
+                <button onclick="loadStage('quarterfinals')" class="prediction-btn" id="btnQuarterfinals">
+                    <i class="fas fa-forward mr-2"></i>Cuartos
+                </button>
+                <button onclick="loadStage('semifinals')" class="prediction-btn" id="btnSemifinals">
+                    <i class="fas fa-fast-forward mr-2"></i>Semifinales
+                </button>
+                <button onclick="loadStage('final')" class="prediction-btn" id="btnFinal">
+                    <i class="fas fa-trophy mr-2"></i>Final
+                </button>
+            </div>
+        </div>
+
+        <!-- API Status Indicator -->
+        <div class="api-status offline" id="apiStatus">
+            🔴 Modo Offline
+        </div>
+
+        <!-- Current Match -->
+        <div id="currentMatchContainer" class="mb-8">
+            <!-- Match cards will be inserted here -->
+        </div>
+
+        <!-- Results Display -->
+        <div id="resultsContainer" class="mb-8">
+            <!-- Results will be shown here -->
+        </div>
+
+        <!-- Statistics Dashboard -->
+        <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-6 mb-8 border border-white border-opacity-20">
+            <h2 class="text-2xl font-bold text-white mb-6 orbitron">
+                <i class="fas fa-chart-line mr-3 text-yellow-400"></i>
+                Estadísticas Personales
+            </h2>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-value orbitron" id="totalPredictions">0</div>
+                    <div class="stat-label">Predicciones Totales</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value orbitron" id="bestStreak">0</div>
+                    <div class="stat-label">Mejor Racha</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value orbitron" id="avgPointsPerMatch">0</div>
+                    <div class="stat-label">Puntos por Partido</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-value orbitron" id="favoritePrediction">-</div>
+                    <div class="stat-label">Predicción Favorita</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Leaderboard -->
+        <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-6 mb-8 border border-white border-opacity-20">
+            <h2 class="text-2xl font-bold text-white mb-6 orbitron">
+                <i class="fas fa-crown mr-3 text-yellow-400"></i>
+                Ranking Mundial
+            </h2>
+            <div id="leaderboardContainer" class="space-y-4">
+                <!-- Leaderboard entries will be inserted here -->
+            </div>
+        </div>
+
+        <!-- Prediction History -->
+        <div class="bg-white bg-opacity-10 backdrop-blur-lg rounded-2xl p-6 border border-white border-opacity-20">
+            <h2 class="text-2xl font-bold text-white mb-6 orbitron">
+                <i class="fas fa-history mr-3 text-yellow-400"></i>
+                Historial de Predicciones
+            </h2>
+            <div id="predictionHistory" class="space-y-3">
+                <div class="text-center text-gray-300 py-8">
+                    No hay predicciones todavía. ¡Haz tu primera predicción!
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Result Modal -->
+    <div id="resultModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
+        <div class="fifa-modal p-8 text-center">
+            <div class="mb-6">
+                <div id="resultIcon" class="text-6xl mb-4"></div>
+                <h3 id="resultTitle" class="text-3xl font-bold orbitron mb-2"></h3>
+                <p id="resultMessage" class="text-lg text-gray-600 mb-4"></p>
+                <div id="pointsAwarded" class="text-2xl font-bold fifa-stat-number orbitron"></div>
+            </div>
+            <button onclick="closeResultModal()" class="prediction-btn">
+                <i class="fas fa-check mr-2"></i>
+                ¡Continúa!
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // FIFA 2026 QUINIELA CHAMPIONS
+        // ============================================
+        
+        /* 
+         * API Configuration (Para uso futuro)
+         * Football-Data.org API Key: 985c976dcee2472889f2806b1c699ad7
+         * 
+         * Para activar APIs reales cuando comience el Mundial 2026:
+         * 1. Descomentar la API key
+         * 2. Actualizar endpoints con datos reales del Mundial
+         * 3. Configurar backend según guía en API_Integration_Guide.md
+         */
+        
+        const API_CONFIG = {
+            FOOTBALL_DATA_KEY: '985c976dcee2472889f2806b1c699ad7', // Tu API key
+            FOOTBALL_DATA_URL: 'https://api.football-data.org/v4',
+            ODDS_API_URL: 'https://api.the-odds-api.com/v4',
+            FLAGS_API_URL: 'https://flagsapi.com',
+            USE_REAL_DATA: false // Cambiar a true cuando el Mundial esté activo
+        };
+
+        // Game State
+        let gameState = {
+            totalPoints: 0,
+            correctPredictions: 0,
+            totalPredictions: 0,
+            currentStreak: 0,
+            bestStreak: 0,
+            currentStage: 'round16',
+            currentMatchIndex: 0,
+            predictionHistory: [],
+            leaderboard: [],
+            predictionType: 'result' // 'result' or 'score'
+        };
+
+        let isOnline = false;
+
+        // Tournament Data - Realistic World Cup matches with real flag URLs
+        const tournamentData = {
+            round16: [
+                {
+                    id: 'match1',
+                    home: { 
+                        name: 'Argentina', 
+                        flag: 'https://flagsapi.com/AR/flat/64.png', 
+                        code: 'ARG',
+                        color: '#74ACDF', 
+                        odds: { win: 1.8, draw: 3.2, lose: 4.5 },
+                        ranking: 1
+                    },
+                    away: { 
+                        name: 'Francia', 
+                        flag: 'https://flagsapi.com/FR/flat/64.png', 
+                        code: 'FRA',
+                        color: '#002654', 
+                        odds: { win: 2.1, draw: 3.2, lose: 3.8 },
+                        ranking: 2
+                    },
+                    stage: 'Octavos de Final',
+                    venue: 'MetLife Stadium',
+                    date: '2026-07-01',
+                    time: '16:00',
+                    predicted: false,
+                    result: null,
+                    liveScore: { home: 0, away: 0 },
+                    status: 'upcoming' // upcoming, live, finished
+                },
+                {
+                    id: 'match2',
+                    home: { 
+                        name: 'Brasil', 
+                        flag: 'https://flagsapi.com/BR/flat/64.png', 
+                        code: 'BRA',
+                        color: '#009739', 
+                        odds: { win: 1.6, draw: 3.8, lose: 5.2 },
+                        ranking: 3
+                    },
+                    away: { 
+                        name: 'España', 
+                        flag: 'https://flagsapi.com/ES/flat/64.png', 
+                        code: 'ESP',
+                        color: '#C60B1E', 
+                        odds: { win: 2.4, draw: 3.8, lose: 3.2 },
+                        ranking: 5
+                    },
+                    stage: 'Octavos de Final',
+                    venue: 'Rose Bowl',
+                    date: '2026-07-01',
+                    time: '20:00',
+                    predicted: false,
+                    result: null,
+                    liveScore: { home: 0, away: 0 },
+                    status: 'upcoming'
+                },
+                {
+                    id: 'match3',
+                    home: { 
+                        name: 'Inglaterra', 
+                        flag: 'https://flagsapi.com/GB/flat/64.png', 
+                        code: 'ENG',
+                        color: '#C8102E', 
+                        odds: { win: 2.0, draw: 3.4, lose: 3.8 },
+                        ranking: 4
+                    },
+                    away: { 
+                        name: 'Alemania', 
+                        flag: 'https://flagsapi.com/DE/flat/64.png', 
+                        code: 'GER',
+                        color: '#FFCE00', 
+                        odds: { win: 2.2, draw: 3.4, lose: 3.6 },
+                        ranking: 6
+                    },
+                    stage: 'Octavos de Final',
+                    venue: 'Soldier Field',
+                    date: '2026-07-02',
+                    time: '16:00',
+                    predicted: false,
+                    result: null,
+                    liveScore: { home: 0, away: 0 },
+                    status: 'upcoming'
+                },
+                {
+                    id: 'match4',
+                    home: { 
+                        name: 'Portugal', 
+                        flag: 'https://flagsapi.com/PT/flat/64.png', 
+                        code: 'POR',
+                        color: '#046A38', 
+                        odds: { win: 1.9, draw: 3.5, lose: 4.1 },
+                        ranking: 7
+                    },
+                    away: { 
+                        name: 'Italia', 
+                        flag: 'https://flagsapi.com/IT/flat/64.png', 
+                        code: 'ITA',
+                        color: '#009246', 
+                        odds: { win: 2.3, draw: 3.5, lose: 3.4 },
+                        ranking: 8
+                    },
+                    stage: 'Octavos de Final',
+                    venue: 'Azteca Stadium',
+                    date: '2026-07-02',
+                    time: '20:00',
+                    predicted: false,
+                    result: null,
+                    liveScore: { home: 0, away: 0 },
+                    status: 'upcoming'
+                },
+                {
+                    id: 'match5',
+                    home: { 
+                        name: 'Holanda', 
+                        flag: 'https://flagsapi.com/NL/flat/64.png', 
+                        code: 'NED',
+                        color: '#FF6600', 
+                        odds: { win: 2.1, draw: 3.3, lose: 3.7 },
+                        ranking: 9
+                    },
+                    away: { 
+                        name: 'Uruguay', 
+                        flag: 'https://flagsapi.com/UY/flat/64.png', 
+                        code: 'URU',
+                        color: '#0038A8', 
+                        odds: { win: 2.5, draw: 3.3, lose: 3.1 },
+                        ranking: 12
+                    },
+                    stage: 'Octavos de Final',
+                    venue: 'Hard Rock Stadium',
+                    date: '2026-07-03',
+                    time: '16:00',
+                    predicted: false,
+                    result: null,
+                    liveScore: { home: 0, away: 0 },
+                    status: 'upcoming'
+                },
+                {
+                    id: 'match6',
+                    home: { 
+                        name: 'Colombia', 
+                        flag: 'https://flagsapi.com/CO/flat/64.png', 
+                        code: 'COL',
+                        color: '#FDE047', 
+                        odds: { win: 2.3, draw: 3.2, lose: 3.4 },
+                        ranking: 10
+                    },
+                    away: { 
+                        name: 'México', 
+                        flag: 'https://flagsapi.com/MX/flat/64.png', 
+                        code: 'MEX',
+                        color: '#006847', 
+                        odds: { win: 2.2, draw: 3.2, lose: 3.5 },
+                        ranking: 14
+                    },
+                    stage: 'Octavos de Final',
+                    venue: 'Lumen Field',
+                    date: '2026-07-03',
+                    time: '20:00',
+                    predicted: false,
+                    result: null,
+                    liveScore: { home: 0, away: 0 },
+                    status: 'upcoming'
+                },
+                {
+                    id: 'match7',
+                    home: { 
+                        name: 'Bélgica', 
+                        flag: 'https://flagsapi.com/BE/flat/64.png', 
+                        code: 'BEL',
+                        color: '#000000', 
+                        odds: { win: 2.4, draw: 3.1, lose: 3.3 },
+                        ranking: 11
+                    },
+                    away: { 
+                        name: 'Japón', 
+                        flag: 'https://flagsapi.com/JP/flat/64.png', 
+                        code: 'JPN',
+                        color: '#BC002D', 
+                        odds: { win: 2.9, draw: 3.1, lose: 2.7 },
+                        ranking: 15
+                    },
+                    stage: 'Octavos de Final',
+                    venue: 'BMO Field',
+                    date: '2026-07-04',
+                    time: '16:00',
+                    predicted: false,
+                    result: null,
+                    liveScore: { home: 0, away: 0 },
+                    status: 'upcoming'
+                },
+                {
+                    id: 'match8',
+                    home: { 
+                        name: 'Croacia', 
+                        flag: 'https://flagsapi.com/HR/flat/64.png', 
+                        code: 'CRO',
+                        color: '#FF0000', 
+                        odds: { win: 2.0, draw: 3.4, lose: 3.8 },
+                        ranking: 13
+                    },
+                    away: { 
+                        name: 'Estados Unidos', 
+                        flag: 'https://flagsapi.com/US/flat/64.png', 
+                        code: 'USA',
+                        color: '#B22234', 
+                        odds: { win: 2.6, draw: 3.4, lose: 2.9 },
+                        ranking: 16
+                    },
+                    stage: 'Octavos de Final',
+                    venue: 'Gillette Stadium',
+                    date: '2026-07-04',
+                    time: '20:00',
+                    predicted: false,
+                    result: null,
+                    liveScore: { home: 0, away: 0 },
+                    status: 'upcoming'
+                }
+            ],
+            quarterfinals: [
+                {
+                    id: 'qf1',
+                    home: { 
+                        name: 'Argentina', 
+                        flag: 'https://flagsapi.com/AR/flat/64.png', 
+                        code: 'ARG',
+                        color: '#74ACDF', 
+                        odds: { win: 2.1, draw: 3.1, lose: 3.7 },
+                        ranking: 1
+                    },
+                    away: { 
+                        name: 'Brasil', 
+                        flag: 'https://flagsapi.com/BR/flat/64.png', 
+                        code: 'BRA',
+                        color: '#009739', 
+                        odds: { win: 2.0, draw: 3.1, lose: 3.9 },
+                        ranking: 5
+                    },
+                    stage: 'Cuartos de Final',
+                    venue: 'Mercedes-Benz Stadium',
+                    date: '2026-07-05',
+                    time: '16:00',
+                    predicted: false,
+                    result: null
+                },
+                {
+                    id: 'qf2',
+                    home: { 
+                        name: 'Inglaterra', 
+                        flag: 'https://flagsapi.com/GB/flat/64.png', 
+                        code: 'ENG',
+                        color: '#C8102E', 
+                        odds: { win: 2.3, draw: 3.2, lose: 3.4 },
+                        ranking: 4
+                    },
+                    away: { 
+                        name: 'Portugal', 
+                        flag: 'https://flagsapi.com/PT/flat/64.png', 
+                        code: 'POR',
+                        color: '#046A38', 
+                        odds: { win: 2.2, draw: 3.2, lose: 3.5 },
+                        ranking: 6
+                    },
+                    stage: 'Cuartos de Final',
+                    venue: 'AT&T Stadium',
+                    date: '2026-07-05',
+                    time: '20:00',
+                    predicted: false,
+                    result: null
+                }
+            ],
+            semifinals: [
+                {
+                    id: 'sf1',
+                    home: { 
+                        name: 'Argentina', 
+                        flag: 'https://flagsapi.com/AR/flat/64.png', 
+                        code: 'ARG',
+                        color: '#74ACDF', 
+                        odds: { win: 2.4, draw: 3.0, lose: 3.2 },
+                        ranking: 1
+                    },
+                    away: { 
+                        name: 'Inglaterra', 
+                        flag: 'https://flagsapi.com/GB/flat/64.png', 
+                        code: 'ENG',
+                        color: '#C8102E', 
+                        odds: { win: 2.1, draw: 3.0, lose: 3.7 },
+                        ranking: 4
+                    },
+                    stage: 'Semifinal',
+                    venue: 'SoFi Stadium',
+                    date: '2026-07-09',
+                    time: '20:00',
+                    predicted: false,
+                    result: null
+                }
+            ],
+            final: [
+                {
+                    id: 'final',
+                    home: { 
+                        name: 'Argentina', 
+                        flag: 'https://flagsapi.com/AR/flat/64.png', 
+                        code: 'ARG',
+                        color: '#74ACDF', 
+                        odds: { win: 2.2, draw: 2.8, lose: 3.5 },
+                        ranking: 1
+                    },
+                    away: { 
+                        name: 'TBD', 
+                        flag: '🏆', 
+                        code: 'TBD',
+                        color: '#FFD700', 
+                        odds: { win: 2.8, draw: 2.8, lose: 2.8 },
+                        ranking: 'TBD'
+                    },
+                    stage: 'Final',
+                    venue: 'MetLife Stadium',
+                    date: '2026-07-12',
+                    time: '19:00',
+                    predicted: false,
+                    result: null
+                }
+            ]
+        };
+
+        // Initialize game
+        function initGame() {
+            initializeApp();
+            loadStage('round16');
+            updateLeaderboard();
+            updatePredictionHistory();
+            startPeriodicUpdates();
+        }
+
+        // Check API Connection
+        async function checkAPIConnection() {
+            const statusElement = document.getElementById('apiStatus');
+            
+            try {
+                statusElement.className = 'api-status loading';
+                statusElement.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Conectando...';
+                
+                // Try to connect to Football Data API
+                const response = await fetch(`${API_CONFIG.FOOTBALL_DATA_API}/competitions`, {
+                    headers: {
+                        'X-Auth-Token': API_CONFIG.API_KEY
+                    }
+                });
+                
+                if (response.ok) {
+                    isOnline = true;
+                    statusElement.className = 'api-status connected';
+                    statusElement.innerHTML = '<i class="fas fa-wifi mr-2"></i>Conectado - Datos en Vivo';
+                    await loadLiveMatches();
+                } else {
+                    throw new Error('API not available');
+                }
+            } catch (error) {
+                isOnline = false;
+                statusElement.className = 'api-status disconnected';
+                statusElement.innerHTML = '<i class="fas fa-wifi mr-2"></i>Modo Offline - Datos Simulados';
+                console.log('Using offline mode with simulated data');
+            }
+        }
+
+        // Load live matches from API
+        async function loadLiveMatches() {
+            try {
+                const response = await fetch(`${API_CONFIG.FOOTBALL_DATA_API}/competitions/2000/matches`, {
+                    headers: {
+                        'X-Auth-Token': API_CONFIG.API_KEY
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    updateMatchesWithLiveData(data.matches);
+                }
+            } catch (error) {
+                console.error('Error loading live matches:', error);
+            }
+        }
+
+        // Update matches with live data
+        function updateMatchesWithLiveData(liveMatches) {
+            Object.keys(tournamentData).forEach(stage => {
+                tournamentData[stage].forEach(match => {
+                    const liveMatch = liveMatches.find(live => 
+                        live.homeTeam.name === match.home.name && 
+                        live.awayTeam.name === match.away.name
+                    );
+                    
+                    if (liveMatch) {
+                        match.status = liveMatch.status === 'IN_PLAY' ? 'live' : 
+                                     liveMatch.status === 'FINISHED' ? 'finished' : 'upcoming';
+                        
+                        if (liveMatch.score.fullTime.homeTeam !== null) {
+                            match.liveScore = {
+                                home: liveMatch.score.fullTime.homeTeam,
+                                away: liveMatch.score.fullTime.awayTeam
+                            };
+                        }
+                    }
+                });
+            });
+            
+            displayCurrentMatch(); // Refresh display with live data
+        }
+
+        // Start periodic updates for live matches
+        function startPeriodicUpdates() {
+            if (isOnline) {
+                setInterval(async () => {
+                    await loadLiveMatches();
+                }, 30000); // Update every 30 seconds
+            }
+        }
+
+        // Toggle prediction type
+        function togglePredictionType(type) {
+            gameState.predictionType = type;
+            
+            // Update button states
+            document.getElementById('resultBtn').classList.toggle('active', type === 'result');
+            document.getElementById('scoreBtn').classList.toggle('active', type === 'score');
+            
+            // Show/hide prediction sections
+            document.getElementById('resultPrediction').classList.toggle('hidden', type !== 'result');
+            document.getElementById('scorePrediction').classList.toggle('hidden', type !== 'score');
+        }
+
+        // Make score prediction
+        function makeScorePrediction() {
+            const homeScore = parseInt(document.getElementById('homeScore').value);
+            const awayScore = parseInt(document.getElementById('awayScore').value);
+            
+            if (isNaN(homeScore) || isNaN(awayScore) || homeScore < 0 || awayScore < 0) {
+                showAlert('Por favor ingresa marcadores válidos (números enteros positivos)', 'warning');
+                return;
+            }
+            
+            // Calcular puntos potenciales basados en la dificultad de la predicción
+            const difficultyFactor = calculateScoreDifficulty(homeScore, awayScore);
+            const potentialPoints = Math.round(300 + (difficultyFactor * 200)); // 300-500 puntos base
+            
+            const prediction = {
+                type: 'score',
+                homeScore: homeScore,
+                awayScore: awayScore,
+                potentialPoints: potentialPoints,
+                timestamp: new Date().toISOString()
+            };
+            
+            makePrediction(prediction);
+        }
+
+        function updateDifficultyIndicator() {
+            const homeScore = parseInt(document.getElementById('homeScore').value) || 0;
+            const awayScore = parseInt(document.getElementById('awayScore').value) || 0;
+            
+            const difficulty = calculateScoreDifficulty(homeScore, awayScore);
+            const stars = Math.ceil(difficulty * 5); // Convert to 1-5 star rating
+            
+            const difficultyContainer = document.getElementById('difficultyIndicator');
+            if (difficultyContainer) {
+                const starElements = difficultyContainer.querySelectorAll('.difficulty-star');
+                starElements.forEach((star, index) => {
+                    star.classList.toggle('active', index < stars);
+                });
+                
+                const points = Math.round(300 + (difficulty * 200));
+                const pointsDisplay = difficultyContainer.querySelector('.points-preview');
+                if (pointsDisplay) {
+                    pointsDisplay.textContent = `${points} pts`;
+                }
+            }
+        }
+
+        function getPredictionText(prediction) {
+            switch(prediction) {
+                case 'home': return 'Victoria Local';
+                case 'away': return 'Victoria Visitante';
+                case 'draw': return 'Empate';
+                default: return 'Sin predicción';
+            }
+        }
+
+        // Enhanced initialization
+        function initializeApp() {
+            // Check API connection
+            checkAPIConnection();
+            
+            // Initialize game
+            loadGameState();
+            updateDisplay();
+            createFloatingParticles();
+            
+            // Add event listeners for score inputs
+            const homeScoreInput = document.getElementById('homeScore');
+            const awayScoreInput = document.getElementById('awayScore');
+            
+            if (homeScoreInput && awayScoreInput) {
+                homeScoreInput.addEventListener('input', updateDifficultyIndicator);
+                awayScoreInput.addEventListener('input', updateDifficultyIndicator);
+            }
+            
+            // Initialize with initial difficulty
+            updateDifficultyIndicator();
+            
+            // Show console help
+            console.log(`
+🏆 FIFA 2026 QUINIELA CHAMPIONS 🏆
+===================================
+
+🎮 Comandos disponibles en consola:
+   • clearHistory()     - Borra todo el historial y reinicia la quiniela
+   • debugTournamentData() - Depura los datos del torneo
+   • gameState          - Ver estado actual del juego
+   • tournamentData     - Ver datos del torneo
+   • API_CONFIG         - Ver configuración de APIs
+
+📱 Funciones de ayuda:
+   • La quiniela es totalmente responsive
+   • Soporte offline completo
+   • API Key incluida: ${API_CONFIG.FOOTBALL_DATA_KEY}
+   
+⚠️ IMPORTANTE: 
+   No puedes hacer predicciones cuando:
+   • El partido ya comenzó hace más de 15 minutos
+   • Ya hiciste una predicción para ese partido
+   
+🎯 Puntuación:
+   • Resultado correcto: 100-300 pts
+   • Marcador exacto: 300-1000 pts (según dificultad)
+   
+¡Disfruta la quiniela! 🎉
+            `);
+        }
+
+        // Update showAlert function for better UX
+        function showAlert(message, type = 'info') {
+            // Remove existing alerts
+            const existingAlert = document.querySelector('.custom-alert');
+            if (existingAlert) {
+                existingAlert.remove();
+            }
+            
+            const alert = document.createElement('div');
+            alert.className = `custom-alert alert-${type}`;
+            alert.innerHTML = `
+                <div class="alert-content">
+                    <span class="alert-icon">${getAlertIcon(type)}</span>
+                    <span class="alert-message">${message}</span>
+                    <button class="alert-close" onclick="this.parentElement.parentElement.remove()">×</button>
+                </div>
+            `;
+            
+            // Add styles if not already present
+            if (!document.querySelector('.alert-styles')) {
+                const style = document.createElement('style');
+                style.className = 'alert-styles';
+                style.textContent = `
+                    .custom-alert {
+                        position: fixed;
+                        top: 80px;
+                        right: 20px;
+                        z-index: 10000;
+                        max-width: 400px;
+                        border-radius: 12px;
+                        backdrop-filter: blur(10px);
+                        border: 2px solid;
+                        animation: alertSlideIn 0.3s ease-out;
+                    }
+                    
+                    .alert-success {
+                        background: linear-gradient(135deg, rgba(40, 167, 69, 0.9), rgba(32, 201, 151, 0.9));
+                        border-color: #28a745;
+                        color: white;
+                    }
+                    
+                    .alert-warning {
+                        background: linear-gradient(135deg, rgba(255, 193, 7, 0.9), rgba(253, 126, 20, 0.9));
+                        border-color: #ffc107;
+                        color: #000;
+                    }
+                    
+                    .alert-info {
+                        background: linear-gradient(135deg, rgba(0, 119, 72, 0.9), rgba(0, 90, 58, 0.9));
+                        border-color: var(--fifa-secondary);
+                        color: white;
+                    }
+                    
+                    .alert-content {
+                        padding: 15px 20px;
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                    }
+                    
+                    .alert-icon {
+                        font-size: 1.2rem;
+                        flex-shrink: 0;
+                    }
+                    
+                    .alert-message {
+                        flex: 1;
+                        font-weight: 500;
+                    }
+                    
+                    .alert-close {
+                        background: none;
+                        border: none;
+                        color: inherit;
+                        font-size: 1.5rem;
+                        cursor: pointer;
+                        padding: 0;
+                        width: 24px;
+                        height: 24px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        border-radius: 50%;
+                        transition: background 0.2s;
+                    }
+                    
+                    .alert-close:hover {
+                        background: rgba(255, 255, 255, 0.2);
+                    }
+                    
+                    @keyframes alertSlideIn {
+                        from {
+                            opacity: 0;
+                            transform: translateX(100%);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateX(0);
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            document.body.appendChild(alert);
+            
+            // Auto-remove after 4 seconds
+            setTimeout(() => {
+                if (alert.parentElement) {
+                    alert.style.animation = 'alertSlideIn 0.3s ease-out reverse';
+                    setTimeout(() => alert.remove(), 300);
+                }
+            }, 4000);
+        }
+
+        function getAlertIcon(type) {
+            switch(type) {
+                case 'success': return '✅';
+                case 'warning': return '⚠️';
+                case 'error': return '❌';
+                default: return 'ℹ️';
+            }
+        }
+
+        // Función de prueba para depurar datos (usar en consola)
+        function debugTournamentData() {
+            console.log('=== TOURNAMENT DATA DEBUG ===');
+            console.log('Current stage:', gameState.currentStage);
+            console.log('Current match index:', gameState.currentMatchIndex);
+            console.log('Tournament data:', tournamentData);
+            
+            const matches = tournamentData[gameState.currentStage];
+            console.log('Matches for current stage:', matches);
+            
+            if (matches && matches.length > 0) {
+                const currentMatch = matches[gameState.currentMatchIndex];
+                console.log('Current match:', currentMatch);
+                
+                if (currentMatch) {
+                    console.log('Home team details:', currentMatch.home);
+                    console.log('Away team details:', currentMatch.away);
+                }
+            }
+            
+            return {
+                stage: gameState.currentStage,
+                matchIndex: gameState.currentMatchIndex,
+                match: matches ? matches[gameState.currentMatchIndex] : null
+            };
+        }
+
+        // Función para limpiar historial (usar en consola del navegador)
+        function clearHistory() {
+            if (confirm('¿Estás seguro de que quieres borrar todo tu historial de predicciones?')) {
+                // Limpiar TODOS los datos de localStorage relacionados
+                localStorage.removeItem('quinielaPredictions');
+                localStorage.removeItem('fifaGameState');
+                localStorage.removeItem('fifa2026_quiniela');
+                localStorage.removeItem('fifa2026_tournament');
+                localStorage.removeItem('fifa2026_predictions');
+                
+                console.log('LocalStorage limpiado completamente');
+                
+                // Reset game state
+                resetGameState();
+                
+                // Reset tournament data a valores originales
+                Object.keys(tournamentData).forEach(stage => {
+                    tournamentData[stage].forEach(match => {
+                        match.predicted = false;
+                        match.actualResult = null;
+                        match.pointsEarned = 0;
+                        match.userPrediction = null;
+                        match.status = 'upcoming';
+                        delete match.predictionType;
+                    });
+                });
+                
+                // Asegurar que los datos del primer partido estén correctos
+                const firstMatch = tournamentData.round16[0];
+                firstMatch.home = {
+                    name: 'Argentina',
+                    flag: 'https://flagsapi.com/AR/flat/64.png',
+                    code: 'ARG',
+                    color: '#74ACDF',
+                    odds: { win: 1.8, draw: 3.2, lose: 4.5 },
+                    ranking: 1
+                };
+                
+                firstMatch.away = {
+                    name: 'Francia',
+                    flag: 'https://flagsapi.com/FR/flat/64.png',
+                    code: 'FRA',
+                    color: '#002654',
+                    odds: { win: 2.1, draw: 3.2, lose: 3.8 },
+                    ranking: 2
+                };
+                
+                // Update displays
+                updateDisplay();
+                updatePredictionHistory();
+                updateLeaderboard();
+                
+                showAlert('✅ Historial borrado exitosamente. Datos restaurados!', 'success');
+                console.log('Historial limpiado. La quiniela se ha reiniciado con datos correctos.');
+                
+                // Refresh the current match display
+                displayCurrentMatch();
+                
+                // Mostrar datos corregidos
+                console.log('Datos corregidos - Argentina:', firstMatch.home);
+                console.log('Datos corregidos - Francia:', firstMatch.away);
+            }
+        }
+
+        // Función para verificar tiempo del partido y validar predicciones
+        function validateMatchTiming(match) {
+            // Función simplificada para evitar errores
+            try {
+                if (!match.date || !match.time) return { canPredict: true, message: '' };
+                
+                const matchDateTime = new Date(`${match.date}T${match.time}:00.000Z`);
+                const currentTime = new Date();
+                const timeUntilMatch = matchDateTime - currentTime;
+                
+                // No permitir predicciones si el partido comenzó hace más de 15 minutos
+                if (timeUntilMatch < -900000) { // -15 minutos en millisegundos
+                    return { 
+                        canPredict: false, 
+                        message: 'El partido ya comenzó. No se pueden hacer más predicciones.' 
+                    };
+                }
+                
+                // Advertir si el partido está por comenzar (menos de 30 minutos)
+                if (timeUntilMatch < 1800000 && timeUntilMatch > 0) { // 30 minutos
+                    const minutesLeft = Math.floor(timeUntilMatch / 60000);
+                    return { 
+                        canPredict: true, 
+                        message: `⚠️ Atención: El partido comienza en ${minutesLeft} minutos.` 
+                    };
+                }
+                
+                return { canPredict: true, message: '' };
+                
+            } catch (error) {
+                console.warn('Error validating match timing:', error);
+                return { canPredict: true, message: '' };
+            }
+        }
+
+        // Función para formatear tiempo restante  
+        function getTimeUntilMatch(match) {
+            // Función simplificada para evitar errores
+            try {
+                if (!match.date || !match.time) return '';
+                
+                const matchDateTime = new Date(`${match.date}T${match.time}:00.000Z`);
+                const currentTime = new Date();
+                const timeUntilMatch = matchDateTime - currentTime;
+                
+                if (timeUntilMatch < 0) {
+                    return '<span class="text-red-600 font-bold">🔴 EN CURSO</span>';
+                }
+                
+                const days = Math.floor(timeUntilMatch / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeUntilMatch % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((timeUntilMatch % (1000 * 60 * 60)) / (1000 * 60));
+                
+                if (days > 0) {
+                    return `🕒 En ${days}d ${hours}h`;
+                } else if (hours > 0) {
+                    return `🕒 En ${hours}h ${minutes}m`;
+                } else {
+                    return `🕒 En ${minutes}m`;
+                }
+                
+            } catch (error) {
+                console.warn('Error calculating time until match:', error);
+                return '';
+            }
+        }
+
+        // Create floating particles
+        function createFloatingParticles() {
+            const container = document.querySelector('.floating-particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'floating-particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                container.appendChild(particle);
+                
+                animateParticle(particle);
+            }
+        }
+
+        function animateParticle(particle) {
+            let pos = Math.random() * window.innerHeight;
+            let speed = Math.random() * 2 + 1;
+            
+            function move() {
+                pos -= speed;
+                if (pos < -10) {
+                    pos = window.innerHeight + 10;
+                    particle.style.left = Math.random() * 100 + 'vw';
+                }
+                particle.style.top = pos + 'px';
+                requestAnimationFrame(move);
+            }
+            move();
+        }
+
+        // Load tournament stage
+        function loadStage(stage) {
+            gameState.currentStage = stage;
+            gameState.currentMatchIndex = 0;
+            
+            // Update navigation buttons
+            document.querySelectorAll('[id^="btn"]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`btn${stage.charAt(0).toUpperCase() + stage.slice(1)}`).classList.add('active');
+            
+            displayCurrentMatch();
+        }
+
+        // Display current match
+        function displayCurrentMatch() {
+            const matches = tournamentData[gameState.currentStage];
+            const match = matches[gameState.currentMatchIndex];
+            
+            if (!match) {
+                document.getElementById('currentMatchContainer').innerHTML = `
+                    <div class="text-center text-white py-8">
+                        <i class="fas fa-check-circle text-6xl text-green-400 mb-4"></i>
+                        <h3 class="text-2xl font-bold orbitron">¡Etapa Completada!</h3>
+                        <p class="text-lg">Has completado todas las predicciones de esta fase.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            // Debug log to check match data
+            console.log('Current match data:', match);
+            console.log('Home team:', match.home);
+            console.log('Away team:', match.away);
+
+            const container = document.getElementById('currentMatchContainer');
+            const timeValidation = validateMatchTiming(match);
+            const timeUntilMatch = getTimeUntilMatch(match);
+            
+            container.innerHTML = `
+                <div class="match-card ${!match.predicted ? 'active' : ''} p-4 md:p-8">
+                    <div class="text-center mb-6">
+                        <div class="live-indicator mb-4">
+                            <i class="fas fa-circle mr-2"></i>PRÓXIMO PARTIDO
+                        </div>
+                        <h2 class="text-2xl md:text-3xl font-bold orbitron text-gray-800 mb-2">${match.stage}</h2>
+                        <div class="text-gray-600 text-sm md:text-base">
+                            <div class="flex flex-wrap justify-center items-center gap-2 md:gap-4">
+                                <span><i class="fas fa-map-marker-alt mr-1"></i>${match.venue}</span>
+                                <span class="hidden md:inline">•</span>
+                                <span><i class="fas fa-calendar mr-1"></i>${formatDate(match.date)}</span>
+                                <span class="hidden md:inline">•</span>
+                                <span><i class="fas fa-clock mr-1"></i>${match.time}</span>
+                            </div>
+                            ${timeUntilMatch ? `<div class="mt-2 font-semibold">${timeUntilMatch}</div>` : ''}
+                        </div>
+                        ${!timeValidation.canPredict ? `
+                            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded-lg mt-4">
+                                <i class="fas fa-exclamation-triangle mr-2"></i>${timeValidation.message}
+                            </div>
+                        ` : timeValidation.message ? `
+                            <div class="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg mt-4">
+                                ${timeValidation.message}
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="flex flex-col md:flex-row items-center justify-center space-y-6 md:space-y-0 md:space-x-8 mb-8">
+                        <!-- Home Team -->
+                        <div class="text-center flex-1 md:flex-initial">
+                            <div class="team-logo flex items-center justify-center mb-4 w-16 h-16 md:w-20 md:h-20 mx-auto" 
+                                 style="background: linear-gradient(135deg, ${match.home.color}30, ${match.home.color}60);">
+                                <img src="${match.home.flag}" alt="${match.home.name}" class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover" 
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="w-10 h-10 md:w-12 md:h-12 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-bold text-sm md:text-lg" style="display:none;">
+                                    ${match.home.code}
+                                </div>
+                            </div>
+                            <h3 class="text-lg md:text-2xl font-bold text-gray-800">${match.home.name}</h3>
+                            <div class="text-xs md:text-sm text-gray-600 mt-1">
+                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
+                                    FIFA #${match.home.ranking}
+                                </span>
+                            </div>
+                            <div class="text-xs md:text-sm text-gray-600 mt-1">Cuota: ${match.home.odds.win}</div>
+                        </div>
+
+                        <!-- VS Divider -->
+                        <div class="vs-divider flex-shrink-0">
+                            <div class="text-2xl md:text-3xl font-black orbitron">VS</div>
+                            ${match.status === 'live' ? '<div class="live-indicator mt-2">EN VIVO</div>' : ''}
+                        </div>
+
+                        <!-- Away Team -->
+                        <div class="text-center flex-1 md:flex-initial">
+                            <div class="team-logo flex items-center justify-center mb-4 w-16 h-16 md:w-20 md:h-20 mx-auto"
+                                 style="background: linear-gradient(135deg, ${match.away.color}30, ${match.away.color}60);">
+                                <img src="${match.away.flag}" alt="${match.away.name}" class="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover" 
+                                     onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                <div class="w-10 h-10 md:w-12 md:h-12 bg-gray-300 rounded-full flex items-center justify-center text-gray-600 font-bold text-sm md:text-lg" style="display:none;">
+                                    ${match.away.code}
+                                </div>
+                            </div>
+                            <h3 class="text-lg md:text-2xl font-bold text-gray-800">${match.away.name}</h3>
+                            <div class="text-xs md:text-sm text-gray-600 mt-1">
+                                <span class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
+                                    FIFA #${match.away.ranking}
+                                </span>
+                            </div>
+                            <div class="text-xs md:text-sm text-gray-600 mt-1">Cuota: ${match.away.odds.win}</div>
+                        </div>
+                    </div>
+
+                    ${!match.predicted && timeValidation.canPredict ? `
+                        <!-- Prediction Type Selector -->
+                        <div class="mb-6">
+                            <h4 class="text-lg md:text-xl font-bold text-gray-800 mb-4 text-center">Tipo de Predicción</h4>
+                            <div class="flex flex-col md:flex-row justify-center space-y-2 md:space-y-0 md:space-x-4 mb-6">
+                                <button onclick="togglePredictionType('result')" id="resultBtn" class="prediction-type-btn active">
+                                    <i class="fas fa-trophy mr-2"></i>Resultado
+                                </button>
+                                <button onclick="togglePredictionType('score')" id="scoreBtn" class="prediction-type-btn">
+                                    <i class="fas fa-calculator mr-2"></i>Marcador Exacto
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Result Prediction -->
+                        <div id="resultPrediction" class="prediction-section">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4">
+                                <button onclick="makePrediction('home')" class="prediction-btn home">
+                                    <div class="mb-2">
+                                        <i class="fas fa-trophy text-2xl"></i>
+                                    </div>
+                                    <div class="font-bold">Gana ${match.home.name}</div>
+                                    <div class="text-sm opacity-80">+${calculatePoints('home', match)} pts</div>
+                                </button>
+                                
+                                <button onclick="makePrediction('draw')" class="prediction-btn draw">
+                                    <div class="mb-2">
+                                        <i class="fas fa-handshake text-2xl"></i>
+                                    </div>
+                                    <div class="font-bold">Empate</div>
+                                    <div class="text-sm opacity-80">+${calculatePoints('draw', match)} pts</div>
+                                </button>
+                                
+                                <button onclick="makePrediction('away')" class="prediction-btn away">
+                                    <div class="mb-2">
+                                        <i class="fas fa-trophy text-2xl"></i>
+                                    </div>
+                                    <div class="font-bold">Gana ${match.away.name}</div>
+                                    <div class="text-sm opacity-80">+${calculatePoints('away', match)} pts</div>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Score Prediction -->
+                        <div id="scorePrediction" class="prediction-section hidden">
+                            <div class="bg-gray-50 rounded-lg p-4 md:p-6">
+                                <div class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-6 mb-6">
+                                    <div class="text-center">
+                                        <div class="font-bold text-base md:text-lg mb-2">${match.home.name}</div>
+                                        <select id="homeScore" class="score-select w-16 h-16 md:w-20 md:h-20 text-lg md:text-xl">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                    </div>
+                                    <div class="text-2xl md:text-3xl font-bold text-gray-400">-</div>
+                                    <div class="text-center">
+                                        <div class="font-bold text-base md:text-lg mb-2">${match.away.name}</div>
+                                        <select id="awayScore" class="score-select w-16 h-16 md:w-20 md:h-20 text-lg md:text-xl">
+                                            <option value="0">0</option>
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                            <option value="3">3</option>
+                                            <option value="4">4</option>
+                                            <option value="5">5</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="text-center">
+                                    <button onclick="makeScorePrediction()" class="prediction-btn w-full md:w-auto">
+                                        <i class="fas fa-check mr-2"></i>
+                                        Confirmar Marcador
+                                        <div class="text-sm opacity-80">+300-1000 pts</div>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    ` : `
+                        <div class="text-center p-6 bg-gray-100 rounded-lg">
+                            <i class="fas fa-check-circle text-3xl text-green-600 mb-3"></i>
+                            <h4 class="text-xl font-bold text-gray-800">Predicción Realizada</h4>
+                            <p class="text-gray-600">Tu predicción: <strong>${getPredictionText(match.userPrediction)}</strong></p>
+                            <button onclick="nextMatch()" class="prediction-btn mt-4">
+                                <i class="fas fa-arrow-right mr-2"></i>Siguiente Partido
+                            </button>
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        // Calculate points based on odds and prediction type
+        function calculatePoints(prediction, match) {
+            const basePoints = 100;
+            let multiplier = 1;
+            
+            if (typeof prediction === 'object' && prediction.type === 'score') {
+                // Score prediction gives more points
+                return 500; // Base for exact score
+            }
+            
+            switch(prediction) {
+                case 'home':
+                    multiplier = match.home.odds.win;
+                    break;
+                case 'draw':
+                    multiplier = match.home.odds.draw;
+                    break;
+                case 'away':
+                    multiplier = match.away.odds.win;
+                    break;
+            }
+            
+            return Math.round(basePoints * multiplier);
+        }
+
+        // Enhanced make prediction function
+        function makePrediction(prediction) {
+            const matches = tournamentData[gameState.currentStage];
+            const match = matches[gameState.currentMatchIndex];
+            
+            if (match.predicted) return;
+
+            // Validate timing before allowing prediction
+            const timeValidation = validateMatchTiming(match);
+            if (!timeValidation.canPredict) {
+                showAlert(timeValidation.message, 'error');
+                return;
+            }
+
+            let actualResult, isCorrect, pointsEarned = 0;
+
+            if (typeof prediction === 'object' && prediction.type === 'score') {
+                // Handle exact score prediction
+                const actualScore = generateRandomScore(match);
+                actualResult = actualScore;
+                
+                // Check if exact score matches
+                const exactMatch = prediction.homeScore === actualScore.home && 
+                                 prediction.awayScore === actualScore.away;
+                
+                // Check if result direction matches (even if score is wrong)
+                const resultMatch = getResultFromScore(prediction) === getResultFromScore(actualScore);
+                
+                if (exactMatch) {
+                    isCorrect = true;
+                    pointsEarned = prediction.potentialPoints || 1000; // Use calculated points
+                } else if (resultMatch) {
+                    isCorrect = true;
+                    pointsEarned = 300; // Partial points for correct result
+                } else {
+                    isCorrect = false;
+                    pointsEarned = 0;
+                }
+                
+                match.userPrediction = prediction;
+                match.predictionType = 'score';
+                
+            } else {
+                // Handle result prediction
+                actualResult = simulateMatchResult(match);
+                isCorrect = prediction === actualResult;
+                pointsEarned = isCorrect ? calculatePoints(prediction, match) : 0;
+                
+                match.userPrediction = prediction;
+                match.predictionType = 'result';
+            }
+
+            // Update match data
+            match.predicted = true;
+            match.actualResult = actualResult;
+            match.pointsEarned = pointsEarned;
+
+            // Update game state
+            gameState.totalPredictions++;
+            if (isCorrect) {
+                gameState.correctPredictions++;
+                gameState.currentStreak++;
+                gameState.totalPoints += pointsEarned;
+                if (gameState.currentStreak > gameState.bestStreak) {
+                    gameState.bestStreak = gameState.currentStreak;
+                }
+            } else {
+                gameState.currentStreak = 0;
+            }
+
+            // Add to history
+            const predictionText = typeof prediction === 'object' ? 
+                `${prediction.homeScore}-${prediction.awayScore}` : 
+                getPredictionText(prediction);
+                
+            const resultText = typeof actualResult === 'object' ? 
+                `${actualResult.home}-${actualResult.away}` : 
+                getPredictionText(actualResult);
+
+            gameState.predictionHistory.unshift({
+                match: `${match.home.name} vs ${match.away.name}`,
+                stage: match.stage,
+                prediction: predictionText,
+                result: resultText,
+                correct: isCorrect,
+                points: pointsEarned,
+                date: new Date().toISOString(),
+                type: match.predictionType
+            });
+
+            // Show result modal
+            showResultModal(isCorrect, pointsEarned, match);
+
+            // Save game state
+            saveGameState();
+            updateDisplay();
+            updatePredictionHistory();
+        }
+
+        // Generate random score based on match probabilities
+        function generateRandomScore(match) {
+            const homeStrength = 1 / match.home.odds.win;
+            const awayStrength = 1 / match.away.odds.win;
+            
+            // More realistic score generation
+            const homeGoals = Math.floor(Math.random() * 4) + (homeStrength > awayStrength ? Math.random() < 0.3 ? 1 : 0 : 0);
+            const awayGoals = Math.floor(Math.random() * 4) + (awayStrength > homeStrength ? Math.random() < 0.3 ? 1 : 0 : 0);
+            
+            return { home: homeGoals, away: awayGoals };
+        }
+
+        // Get result from score
+        function getResultFromScore(score) {
+            if (score.home > score.away) return 'home';
+            if (score.home < score.away) return 'away';
+            return 'draw';
+        }
+
+        // Simulate match result with realistic probabilities based on odds
+        function simulateMatchResult(match) {
+            const homeOdds = 1 / match.home.odds.win;
+            const drawOdds = 1 / match.home.odds.draw;
+            const awayOdds = 1 / match.away.odds.win;
+            
+            const total = homeOdds + drawOdds + awayOdds;
+            const homeProb = homeOdds / total;
+            const drawProb = drawOdds / total;
+            
+            const random = Math.random();
+            
+            if (random < homeProb) return 'home';
+            if (random < homeProb + drawProb) return 'draw';
+            return 'away';
+        }
+
+        // Get prediction text
+        function getPredictionText(prediction) {
+            switch(prediction) {
+                case 'home': return 'Local Gana';
+                case 'draw': return 'Empate';
+                case 'away': return 'Visitante Gana';
+                default: return prediction;
+            }
+        }
+
+        // Show result modal
+        function showResultModal(isCorrect, points, match) {
+            const modal = document.getElementById('resultModal');
+            const icon = document.getElementById('resultIcon');
+            const title = document.getElementById('resultTitle');
+            const message = document.getElementById('resultMessage');
+            const pointsDiv = document.getElementById('pointsAwarded');
+
+            if (isCorrect) {
+                icon.innerHTML = '🎉';
+                title.textContent = '¡PREDICCIÓN CORRECTA!';
+                title.className = 'text-3xl font-bold orbitron mb-2 text-green-600';
+                message.textContent = `¡Increíble! Acertaste el resultado del partido ${match.home.name} vs ${match.away.name}`;
+                pointsDiv.textContent = `+${points} puntos`;
+                pointsDiv.className = 'text-2xl font-bold fifa-stat-number orbitron text-green-600';
+            } else {
+                icon.innerHTML = '😔';
+                title.textContent = 'Predicción Incorrecta';
+                title.className = 'text-3xl font-bold orbitron mb-2 text-red-600';
+                message.textContent = `Esta vez no acertaste, pero sigue intentando. El resultado fue: ${getPredictionText(match.actualResult)}`;
+                pointsDiv.textContent = '+0 puntos';
+                pointsDiv.className = 'text-2xl font-bold fifa-stat-number orbitron text-red-600';
+            }
+
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+        }
+
+        // Close result modal
+        function closeResultModal() {
+            document.getElementById('resultModal').classList.add('hidden');
+            document.getElementById('resultModal').classList.remove('flex');
+            nextMatch();
+        }
+
+        // Next match
+        function nextMatch() {
+            const matches = tournamentData[gameState.currentStage];
+            if (gameState.currentMatchIndex < matches.length - 1) {
+                gameState.currentMatchIndex++;
+            } else {
+                // Move to next stage or show completion
+                const stages = ['round16', 'quarterfinals', 'semifinals', 'final'];
+                const currentStageIndex = stages.indexOf(gameState.currentStage);
+                if (currentStageIndex < stages.length - 1) {
+                    gameState.currentStage = stages[currentStageIndex + 1];
+                    gameState.currentMatchIndex = 0;
+                }
+            }
+            displayCurrentMatch();
+            saveGameState();
+        }
+
+        // Update display
+        function updateDisplay() {
+            const accuracy = gameState.totalPredictions > 0 ? 
+                Math.round((gameState.correctPredictions / gameState.totalPredictions) * 100) : 0;
+            
+            const avgPoints = gameState.totalPredictions > 0 ?
+                Math.round(gameState.totalPoints / gameState.totalPredictions) : 0;
+
+            // Desktop stats
+            document.getElementById('totalPoints').textContent = gameState.totalPoints;
+            document.getElementById('correctPredictions').textContent = gameState.correctPredictions;
+            document.getElementById('currentStreak').textContent = gameState.currentStreak;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+
+            // Mobile stats
+            document.getElementById('totalPointsMobile').textContent = gameState.totalPoints;
+            document.getElementById('correctPredictionsMobile').textContent = gameState.correctPredictions;
+            document.getElementById('currentStreakMobile').textContent = gameState.currentStreak;
+            document.getElementById('accuracyMobile').textContent = accuracy + '%';
+
+            // Detailed stats
+            document.getElementById('totalPredictions').textContent = gameState.totalPredictions;
+            document.getElementById('bestStreak').textContent = gameState.bestStreak;
+            document.getElementById('avgPointsPerMatch').textContent = avgPoints;
+            
+            // Favorite prediction (most common)
+            const predictions = gameState.predictionHistory.map(h => h.prediction);
+            const favPrediction = predictions.length > 0 ? 
+                predictions.sort((a,b) =>
+                    predictions.filter(v => v === a).length - predictions.filter(v => v === b).length
+                ).pop() : '-';
+            document.getElementById('favoritePrediction').textContent = favPrediction;
+        }
+
+        // Update prediction history
+        function updatePredictionHistory() {
+            const container = document.getElementById('predictionHistory');
+            
+            if (gameState.predictionHistory.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-gray-300 py-8">
+                        No hay predicciones todavía. ¡Haz tu primera predicción!
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = gameState.predictionHistory.slice(0, 10).map((pred, index) => `
+                <div class="leaderboard-card p-4 flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 ${pred.correct ? 'bg-green-500' : 'bg-red-500'} rounded-full flex items-center justify-center">
+                            <i class="fas fa-${pred.correct ? 'check' : 'times'} text-white"></i>
+                        </div>
+                        <div>
+                            <div class="font-bold text-lg">${pred.match}</div>
+                            <div class="text-sm text-gray-600">${pred.stage} • ${formatDate(pred.date)}</div>
+                            <div class="text-sm">Tu predicción: <span class="font-medium">${pred.prediction}</span> | Resultado: <span class="font-medium">${pred.result}</span></div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold ${pred.correct ? 'text-green-600' : 'text-red-600'} orbitron">
+                            +${pred.points}
+                        </div>
+                        <div class="text-sm text-gray-600">puntos</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update leaderboard (simulated)
+        function updateLeaderboard() {
+            const container = document.getElementById('leaderboardContainer');
+            
+            // Add current player to leaderboard
+            const currentPlayer = {
+                name: 'Tú',
+                points: gameState.totalPoints,
+                accuracy: gameState.totalPredictions > 0 ? 
+                    Math.round((gameState.correctPredictions / gameState.totalPredictions) * 100) : 0,
+                predictions: gameState.totalPredictions
+            };
+
+            // Simulated other players
+            const simulatedPlayers = [
+                { name: 'Carlos_Futbol', points: 2450, accuracy: 78, predictions: 24 },
+                { name: 'Maria_Quiniela', points: 2380, accuracy: 82, predictions: 22 },
+                { name: 'Pedro_Mundial', points: 2290, accuracy: 75, predictions: 26 },
+                { name: 'Ana_Soccer', points: 2150, accuracy: 80, predictions: 20 },
+                { name: 'Luis_Champion', points: 2100, accuracy: 73, predictions: 25 }
+            ];
+
+            const allPlayers = [currentPlayer, ...simulatedPlayers]
+                .sort((a, b) => b.points - a.points)
+                .slice(0, 10);
+
+            container.innerHTML = allPlayers.map((player, index) => {
+                const isCurrentPlayer = player.name === 'Tú';
+                const rankClass = index < 3 ? ['gold', 'silver', 'bronze'][index] : '';
+                
+                return `
+                    <div class="leaderboard-card p-4 flex items-center justify-between ${isCurrentPlayer ? 'border-yellow-400 bg-yellow-50' : ''}">
+                        <div class="flex items-center space-x-4">
+                            <div class="rank-badge ${rankClass}">
+                                ${index < 3 ? ['🥇', '🥈', '🥉'][index] : index + 1}
+                            </div>
+                            <div>
+                                <div class="font-bold text-lg ${isCurrentPlayer ? 'text-yellow-600' : ''}">${player.name}</div>
+                                <div class="text-sm text-gray-600">${player.accuracy}% precisión • ${player.predictions} predicciones</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-2xl font-bold fifa-stat-number orbitron">${player.points}</div>
+                            <div class="text-sm fifa-stat-label">puntos</div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Utility functions
+        function formatDate(dateString) {
+            if (dateString.includes('T')) {
+                return new Date(dateString).toLocaleDateString('es-ES', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            }
+            return new Date(dateString + 'T00:00:00').toLocaleDateString('es-ES', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            });
+        }
+
+        // Save/Load game state
+        function saveGameState() {
+            // Solo guardar el estado del juego, NO los datos del torneo
+            const dataToSave = {
+                gameState: gameState,
+                lastUpdated: new Date().toISOString()
+            };
+            localStorage.setItem('fifa2026_quiniela', JSON.stringify(dataToSave));
+            
+            // Guardar solo las predicciones de los partidos, no todos los datos
+            const predictions = {};
+            Object.keys(tournamentData).forEach(stage => {
+                predictions[stage] = tournamentData[stage].map(match => ({
+                    id: match.id,
+                    predicted: match.predicted,
+                    actualResult: match.actualResult,
+                    pointsEarned: match.pointsEarned,
+                    userPrediction: match.userPrediction,
+                    predictionType: match.predictionType
+                }));
+            });
+            localStorage.setItem('fifa2026_predictions', JSON.stringify(predictions));
+        }
+
+        function loadGameState() {
+            try {
+                // Cargar estado del juego
+                const saved = localStorage.getItem('fifa2026_quiniela');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (parsed.gameState) {
+                        Object.assign(gameState, parsed.gameState);
+                    } else {
+                        // Formato antiguo de localStorage
+                        Object.assign(gameState, parsed);
+                    }
+                }
+                
+                // Cargar solo las predicciones, manteniendo los datos originales del torneo
+                const savedPredictions = localStorage.getItem('fifa2026_predictions');
+                if (savedPredictions) {
+                    const predictions = JSON.parse(savedPredictions);
+                    Object.keys(predictions).forEach(stage => {
+                        if (tournamentData[stage]) {
+                            predictions[stage].forEach((prediction, index) => {
+                                if (tournamentData[stage][index] && prediction.id === tournamentData[stage][index].id) {
+                                    // Solo aplicar las predicciones, no los datos del equipo
+                                    tournamentData[stage][index].predicted = prediction.predicted;
+                                    tournamentData[stage][index].actualResult = prediction.actualResult;
+                                    tournamentData[stage][index].pointsEarned = prediction.pointsEarned;
+                                    tournamentData[stage][index].userPrediction = prediction.userPrediction;
+                                    tournamentData[stage][index].predictionType = prediction.predictionType;
+                                }
+                            });
+                        }
+                    });
+                }
+                
+                console.log('Game state and predictions loaded');
+                
+            } catch (error) {
+                console.warn('Error loading game state:', error);
+                resetGameState();
+            }
+        }
+
+        function resetGameState() {
+            gameState = {
+                totalPoints: 0,
+                correctPredictions: 0,
+                totalPredictions: 0,
+                currentStreak: 0,
+                bestStreak: 0,
+                currentStage: 'round16',
+                currentMatchIndex: 0,
+                predictionHistory: [],
+                leaderboard: [],
+                predictionType: 'result'
+            };
+        }
+
+        // Initialize game when page loads
+        document.addEventListener('DOMContentLoaded', initGame);
+    </script>
+</body>
+</html>

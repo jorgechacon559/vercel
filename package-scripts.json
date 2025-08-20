@@ -1,0 +1,13 @@
+{
+  "scripts": {
+    "dev": "EXPO_NO_TELEMETRY=1 expo start --tunnel",
+    "dev:web": "EXPO_NO_TELEMETRY=1 expo start --web",
+    "dev:android": "EXPO_NO_TELEMETRY=1 expo start --android",
+    "dev:ios": "EXPO_NO_TELEMETRY=1 expo start --ios",
+    "build:web": "expo export -p web && npx workbox generateSW workbox-config.js",
+    "build:android": "expo prebuild -p android",
+    "setup": "npm install && echo 'Configuración completa. Usa npm run dev:web para desarrollo web'",
+    "games:copy": "cp FIFA2026_QuinielaEstilo.html public/ && cp FIFA26Memorama.html public/ && echo 'Juegos copiados a public/'",
+    "lint": "eslint ."
+  }
+}

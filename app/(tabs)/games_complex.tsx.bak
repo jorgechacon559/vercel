@@ -1,0 +1,322 @@
+import { View, Text, StyleSheet, SafeAreaView, ScrollView, TouchableOpacity, Platform, Alert } from 'react-native';
+import { colors, commonStyles } from '../../styles/commonStyles';
+import { useRouter } from 'expo-router';
+import { GamePlatformService } from '../../utils/GamePlatformService';
+
+export default function GamesScreen() {
+  const router = useRouter();
+
+  // Obtener información de la plataforma
+  const platformStatus = GamePlatformService.getPlatformStatus();
+  const compatibleGames = GamePlatformService.getCompatibleGames();
+
+  // Función para jugar un juego específico
+  const handlePlayGame = async (gameType: 'quiniela' | 'memorama' | 'executable') => {
+    if (gameType === 'executable') {
+      // Manejar juego ejecutable por separado
+      handleDownloadGame();
+      return;
+    }
+    
+    const result = await GamePlatformService.openGame(gameType, router);
+    
+    if (!result.success) {
+      Alert.alert(
+        'Juego no disponible',
+        result.message,
+        [{ text: 'Entendido', style: 'default' }]
+      );
+    }
+  };
+
+  // Función para descargar el juego ejecutable
+  const handleDownloadGame = () => {
+    if (Platform.OS === 'web') {
+      Alert.alert(
+        'Descargar Juego FIFA',
+        '¿Deseas descargar el juego ejecutable FIFA 2026? (29 MB)',
+        [
+          { text: 'Cancelar', style: 'cancel' },
+          { 
+            text: 'Descargar', 
+            onPress: () => {
+              // En web, crear un enlace de descarga
+              const link = document.createElement('a');
+              link.href = '/FIFA2026_SimpleGame.exe';
+              link.download = 'FIFA2026_SimpleGame.exe';
+              link.click();
+            }
+          }
+        ]
+      );
+    } else {
+      Alert.alert(
+        'Juego Ejecutable',
+        'Este juego está disponible para descarga en la versión web. Accede desde un navegador para descargarlo.',
+        [{ text: 'Entendido', style: 'default' }]
+      );
+    }
+  };
+
+  const getGameIcon = (gameType: string) => {
+    switch (gameType) {
+      case 'quiniela': return '🎯';
+      case 'memorama': return '🧠';
+      case 'executable': return '🕹️';
+      default: return '🎮';
+    }
+  };
+
+  const getGameTitle = (gameType: string) => {
+    switch (gameType) {
+      case 'quiniela': return 'Quiniela FIFA 2026';
+      case 'memorama': return 'Memorama FIFA';
+      case 'executable': return 'Juego Simple FIFA';
+      default: return 'Juego Desconocido';
+    }
+  };
+
+  const getGameDescription = (gameType: string) => {
+    switch (gameType) {
+      case 'quiniela': return 'Predice los resultados del Mundial 2026 y pon a prueba tu suerte';
+      case 'memorama': return 'Juego de memoria con cartas temáticas del Mundial de Fútbol';
+      case 'executable': return 'Juego ejecutable para Windows con gráficos avanzados';
+      default: return '';
+    }
+  };
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.content}>
+        <Text style={styles.title}>Juegos FIFA 2026</Text>
+        <Text style={styles.subtitle}>¡Pon a prueba tus habilidades y diviértete!</Text>
+
+        {/* Información de la plataforma */}
+        <View style={styles.platformIndicator}>
+          <Text style={styles.platformText}>
+            📱 {platformStatus.message}
+          </Text>
+        </View>
+
+        {/* Lista de juegos compatibles */}
+        <View style={styles.gamesSection}>
+          <Text style={styles.sectionTitle}>Juegos Disponibles</Text>
+          
+          {compatibleGames.map((game) => (
+            <TouchableOpacity 
+              key={game.type}
+              style={[styles.card, getGameCardStyle(game.type)]} 
+              onPress={() => handlePlayGame(game.type as 'quiniela' | 'memorama' | 'executable')}
+            >
+              <Text style={styles.cardTitle}>
+                {getGameIcon(game.type)} {getGameTitle(game.type)}
+              </Text>
+              <Text style={styles.cardText}>
+                {getGameDescription(game.type)}
+              </Text>
+              
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>
+                  {game.type === 'executable' ? 'EXE' : 'HTML5'}
+                </Text>
+              </View>
+              
+              <View style={styles.compatibilityInfo}>
+                <Text style={styles.compatibilityText}>
+                  ✅ {game.method === 'new-tab' ? 'Se abre en nueva ventana' : 
+                       game.method === 'webview' ? 'Se abre en la app' : 
+                       'Descarga disponible'}
+                </Text>
+                <Text style={styles.requirementsText}>
+                  📋 {game.requirements}
+                </Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+
+        {/* Juegos no compatibles */}
+        {compatibleGames.length < 3 && (
+          <View style={styles.incompatibleSection}>
+            <Text style={styles.sectionTitle}>Juegos No Disponibles</Text>
+            {['quiniela', 'memorama', 'executable'].map(gameType => {
+              const compatibility = GamePlatformService.getGameCompatibility(gameType as any);
+              if (compatibility.supported) return null;
+              
+              return (
+                <View key={gameType} style={[styles.card, styles.disabledCard]}>
+                  <Text style={[styles.cardTitle, styles.disabledText]}>
+                    {getGameIcon(gameType)} {getGameTitle(gameType)}
+                  </Text>
+                  <Text style={[styles.cardText, styles.disabledText]}>
+                    {compatibility.alternativeMessage}
+                  </Text>
+                  
+                  <View style={[styles.badge, styles.disabledBadge]}>
+                    <Text style={styles.badgeText}>NO DISPONIBLE</Text>
+                  </View>
+                </View>
+              );
+            })}
+          </View>
+        )}
+
+        {/* Información adicional */}
+        <View style={styles.infoCard}>
+          <Text style={styles.infoTitle}>ℹ️ Información de Compatibilidad</Text>
+          <Text style={styles.infoText}>
+            {platformStatus.isWeb && '🌐 Modo Web: Los juegos HTML se abren en nuevas ventanas. El ejecutable está disponible para descarga.'}
+            {platformStatus.isMobile && '📱 Modo Móvil: Los juegos HTML se ejecutan en WebView integrado. El ejecutable no es compatible.'}
+            {platformStatus.isWindows && !platformStatus.isWeb && '🖥️ Modo Escritorio: Todos los juegos están disponibles con funcionalidad completa.'}
+          </Text>
+          
+          <Text style={styles.infoText}>
+            💡 Los juegos pueden requerir una conexión a internet estable para funcionar correctamente.
+          </Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+// Función auxiliar para obtener el estilo de cada card
+function getGameCardStyle(gameType: string) {
+  switch (gameType) {
+    case 'quiniela':
+      return { borderLeftColor: colors.secondary };
+    case 'memorama':
+      return { borderLeftColor: colors.accent };
+    case 'executable':
+      return { borderLeftColor: colors.blue };
+    default:
+      return { borderLeftColor: colors.primary };
+  }
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.background,
+  },
+  content: {
+    padding: 24,
+  },
+  title: {
+    ...commonStyles.title,
+    textAlign: 'center',
+    marginBottom: 8,
+    color: colors.primary,
+  },
+  subtitle: {
+    ...commonStyles.subtitle,
+    textAlign: 'center',
+    marginBottom: 32,
+    color: colors.text,
+  },
+  platformIndicator: {
+    backgroundColor: colors.blue,
+    borderRadius: 12,
+    padding: 12,
+    marginBottom: 24,
+    alignItems: 'center',
+  },
+  platformText: {
+    color: colors.white,
+    fontSize: 14,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  gamesSection: {
+    marginBottom: 24,
+  },
+  incompatibleSection: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.primary,
+    marginBottom: 16,
+    textAlign: 'center',
+  },
+  card: {
+    backgroundColor: '#fff',
+    borderRadius: 16,
+    padding: 20,
+    marginBottom: 16,
+    ...commonStyles.shadowStrong,
+    position: 'relative',
+    borderLeftWidth: 5,
+  },
+  disabledCard: {
+    opacity: 0.6,
+    backgroundColor: '#f5f5f5',
+    borderLeftColor: colors.gray,
+  },
+  cardTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: colors.text,
+    marginBottom: 8,
+  },
+  cardText: {
+    ...commonStyles.text,
+    marginBottom: 12,
+    lineHeight: 20,
+  },
+  disabledText: {
+    color: colors.textSecondary,
+  },
+  badge: {
+    position: 'absolute',
+    top: 15,
+    right: 15,
+    backgroundColor: colors.primary,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+  },
+  disabledBadge: {
+    backgroundColor: colors.gray,
+  },
+  badgeText: {
+    color: colors.white,
+    fontSize: 10,
+    fontWeight: 'bold',
+  },
+  compatibilityInfo: {
+    marginTop: 12,
+    paddingTop: 12,
+    borderTopWidth: 1,
+    borderTopColor: colors.gray + '30',
+  },
+  compatibilityText: {
+    fontSize: 14,
+    color: colors.success,
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+  requirementsText: {
+    fontSize: 12,
+    color: colors.textSecondary,
+    fontStyle: 'italic',
+  },
+  infoCard: {
+    backgroundColor: colors.accent,
+    borderRadius: 16,
+    padding: 20,
+    marginTop: 20,
+  },
+  infoTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: colors.white,
+    marginBottom: 12,
+  },
+  infoText: {
+    color: colors.white,
+    fontSize: 14,
+    lineHeight: 20,
+    marginBottom: 8,
+  },
+});
